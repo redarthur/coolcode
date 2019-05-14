@@ -1,5 +1,4 @@
-version: '3.7'
-
+version: "3.7"
 services:
   mongo1:
     image: mongo:latest
@@ -7,33 +6,31 @@ services:
       - db-data:/data/db
     restart: always
     ports:
-      - "27019:27017"
+      - 27019:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: red
       MONGO_INITDB_ROOT_PASSWORD: abc123red
     networks:
       - red_development
-
   mongo2:
     image: mongo:4
     volumes:
       - db-data:/data/db
     restart: always
     ports:
-      - "27019:27017"
+      - 27019:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: red
       MONGO_INITDB_ROOT_PASSWORD: abc123red
     networks:
       - red_development
-
   elastic:
-    image: elasticsearch:6.6.1
+    image: elasticsearch:7.0.1
     restart: always
     environment:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - xpack.security.enabled=false
       - Elogger.level=TRACE
     ulimits:
@@ -43,10 +40,9 @@ services:
     volumes:
       - esdata:/data/elasticsearch
     ports:
-      - "9200:9200"
+      - 9200:9200
     networks:
       - red_development
-
   elastic_template:
     depends_on:
       - elastic
@@ -54,20 +50,18 @@ services:
       context: ./elastic
     networks:
       - red_development
-
   redis:
     image: redis
     restart: always
     ports:
-      - "6379:6379"
+      - 6379:6379
     networks:
       - red_development
-
   minio:
     image: minio/minio
     restart: always
     ports:
-      - "9000:9000"
+      - 9000:9000
     command: server /data
     volumes:
       - s3:/data
@@ -76,21 +70,18 @@ services:
       MINIO_SECRET_KEY: PSvKinHscx8OjznqbHCUB2h7GC8f7ZNibrQLXW6x
     networks:
       - red_development
-
   red-server:
     build:
       context: ""
       args:
-        - someVar: 1
-        - image: node:10.12.1
+        - somevar=1
+        - image=node:10.12.1
     restart: on-failure
     volumes:
       - /etc/red:/etc/red
-
 networks:
   red_development:
     driver: bridge
-
 volumes:
   db-data:
     driver: local
